@@ -11,8 +11,8 @@
     import androidx.compose.ui.unit.dp
     import androidx.lifecycle.viewmodel.compose.viewModel
     import com.example.evparcial2.data.model.Producto
-    import com.example.evparcial2.domain.viewmodels.ViewModelPedidos
-    import com.example.evparcial2.domain.viewmodels.ViewModelProductos
+    import com.example.evparcial2.viewmodels.ViewModelPedidos
+    import com.example.evparcial2.viewmodels.ViewModelProductos
     import com.example.evparcial2.ui.components.common.PlantillaProducto
 
     @OptIn(ExperimentalMaterial3Api::class)
