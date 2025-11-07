@@ -23,7 +23,8 @@ import androidx.compose.material.icons.filled.*
 fun PantallaPerfil(
     usuario: Usuario,
     onVolver: () -> Unit,
-    onCerrarSesion: () -> Unit
+    onCerrarSesion: () -> Unit,
+    onEditarFoto: () -> Unit
 ) {
 
     val viewModelPerfil: ViewModelPerfil = viewModel()

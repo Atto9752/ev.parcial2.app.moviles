@@ -1,8 +1,6 @@
 package com.example.evparcial2.ui.pantallas
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Environment
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -15,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.evparcial2.ui.components.images.ImagenInteligente
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.evparcial2.viewmodels.ViewModelPerfil
 import com.google.type.Date
 import java.io.File
@@ -24,18 +22,29 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun PerfilScreen(viewModel: ViewModelPerfil) {
+fun PantallaCambiarFoto(
+    onVolver: () -> Unit
+) {
     val context = LocalContext.current
-    val imagenUri by viewModel.imagenUri.collectAsState()
+    val viewModelPerfil: ViewModelPerfil = viewModel()
+    val imagenUri by viewModelPerfil.imagenUri.collectAsState()
+
+    // galeria
     val pickImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri -> viewModel.setImage(uri)
+    ) { uri ->
+        viewModelPerfil.setImage(uri)
     }
+
+    // camara
     var cameraUri by remember { mutableStateOf<Uri?>(null) }
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
-    ) { success -> if (success) viewModel.setImage(cameraUri)
+    ) { success ->
+        if (success) viewModelPerfil.setImage(cameraUri)
     }
+
+    // Crear URI para la imagen
     fun createImageUri(context: Context): Uri {
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -46,36 +55,48 @@ fun PerfilScreen(viewModel: ViewModelPerfil) {
             file
         )
     }
-    Box(
+
+    // Diseño
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            ImagenInteligente(imagenUri)
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = { pickImageLauncher.launch("image/*") }) {
-                Text("Selecciona tu imagen desde galería")
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = {
-                when (PackageManager.PERMISSION_GRANTED) {
-                    ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) - {
-                        val uri = createImageUri(context)
-                        cameraUri = uri
-                        takePictureLauncher.launch(uri)
-                    }
-                    else -> {
-                        // Solicitar permiso de cámara
-                        val requestPermissionLauncher = rememberLauncherForActivityResult(
-                            contract = ActivityResultContracts.RequestPermission()
-                        )
-                    }
-                }
-            }) {
-                Text("Toma una foto con la cámara")
-            }
+        // Vista previa
+        ImagenInteligente(imagenUri)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Boton galeria
+        Button(
+            onClick = { pickImageLauncher.launch("image/*") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Seleccionar de Galería")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Boton camara
+        Button(
+            onClick = {
+                // Por ahora sin permisos para simplificar
+                val uri = createImageUri(context)
+                cameraUri = uri
+                takePictureLauncher.launch(uri)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Tomar Foto con Cámara")
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Boton volver
+        Button(onClick = onVolver) {
+            Text("Volver al Perfil")
         }
     }
 }
