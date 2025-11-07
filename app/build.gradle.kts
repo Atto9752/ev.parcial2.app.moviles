@@ -5,11 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    // APLICAMOS el plugin KSP que definimos en el otro archivo
-    id("com.google.devtools.ksp")
+    // Usamos el alias simple que busca la versión correcta en el toml
+    alias(libs.plugins.ksp)
 }
 
-// --- ¡¡ARREGLO DE SINTAXIS!! Todo el bloque debe estar dentro de 'android { ... }' ---
 android {
     namespace = "com.example.evparcial2"
     compileSdk = 36
@@ -44,13 +43,10 @@ android {
         compose = true
     }
 
-    // Bloque KSP (Correcto)
     ksp {
         arg("room.schemaDirectory", "$projectDir/schemas")
     }
 }
-// --- FIN DEL BLOQUE ANDROID ---
-
 
 dependencies {
     implementation(libs.androidx.core.ktx)
