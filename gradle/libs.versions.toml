@@ -17,6 +17,8 @@ roomKtx = "2.8.3"
 protoliteWellKnownTypes = "18.0.1"
 material3 = "1.4.0"
 foundation = "1.9.4"
+# --- ¡¡ESTA ES LA LÍNEA NUEVA (LA VERSIÓN CORRECTA)!! ---
+ksp = "2.0.21-1.0.22"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,4 +49,5 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+# --- ¡¡ESTA ES LA LÍNEA NUEVA (EL "ATAJO" QUE FALTABA)!! ---
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
