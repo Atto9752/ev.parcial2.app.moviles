@@ -82,7 +82,6 @@ fun PantallaCambiarFoto(
         // Boton camara
         Button(
             onClick = {
-                // Por ahora sin permisos para simplificar
                 val uri = createImageUri(context)
                 cameraUri = uri
                 takePictureLauncher.launch(uri)
