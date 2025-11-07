@@ -97,8 +97,18 @@ fun NavPrincipal() {
                     navController.navigate("login") {
                         popUpTo("inicio") { inclusive = true }
                     }
+                },
+                onEditarFoto = {
+                    navController.navigate("cambiarFoto")
                 }
             )
         }
+
+        composable("cambiarFoto") {
+            PantallaCambiarFoto(
+                onVolver = { navController.popBackStack() }
+            )
+        }
+
     }
 }
