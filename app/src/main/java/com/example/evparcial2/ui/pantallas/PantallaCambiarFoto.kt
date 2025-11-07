@@ -46,7 +46,7 @@ fun PantallaCambiarFoto(
 
     // Crear URI para la imagen
     fun createImageUri(context: Context): Uri {
-        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(java.util.Date())
         val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val file = File.createTempFile("JPEG_${timestamp}_", ".jpg", storageDir)
         return FileProvider.getUriForFile(
