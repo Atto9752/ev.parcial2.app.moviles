@@ -5,11 +5,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    // --- ¡¡LÍNEA NUEVA Y CLAVE!! ---
     // APLICAMOS el plugin KSP que definimos en el otro archivo
     id("com.google.devtools.ksp")
 }
 
+// --- ¡¡ARREGLO DE SINTAXIS!! Todo el bloque debe estar dentro de 'android { ... }' ---
 android {
     namespace = "com.example.evparcial2"
     compileSdk = 36
@@ -44,17 +44,18 @@ android {
         compose = true
     }
 
-    // --- ¡¡ESTO AHORA FUNCIONARÁ!! ---
-    // (Porque el plugin KSP ya está aplicado)
+    // Bloque KSP (Correcto)
     ksp {
         arg("room.schemaDirectory", "$projectDir/schemas")
     }
 }
+// --- FIN DEL BLOQUE ANDROID ---
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0") // Arreglo de ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -66,12 +67,11 @@ dependencies {
     // Librería de los ÍCONOS
     implementation("androidx.compose.material:material-icons-extended:1.6.7")
 
-    // --- ¡¡LIBRERÍAS DE ROOM (Base de Datos)!! ---
+    // Librerías de ROOM (Base de Datos)
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
-    // --- ¡¡ESTO AHORA FUNCIONARÁ!! ---
     ksp("androidx.room:room-compiler:$room_version")
 
     implementation("androidx.navigation:navigation-compose:2.7.5")
