@@ -5,10 +5,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    // Usamos el alias simple que busca la versión correcta en el toml
+    // Aplicamos el plugin KSP.
     alias(libs.plugins.ksp)
 }
 
+// --- BLOQUE 1: Configuración de Android (La jerarquía correcta) ---
 android {
     namespace = "com.example.evparcial2"
     compileSdk = 36
@@ -43,14 +44,18 @@ android {
         compose = true
     }
 
+    // Bloque KSP (Correcto)
     ksp {
         arg("room.schemaDirectory", "$projectDir/schemas")
     }
 }
+// --- FIN DEL BLOQUE ANDROID ---
 
+// --- BLOQUE 2: Dependencias (DEBE ir inmediatamente después del bloque Android) ---
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    // Usamos el nombre directo para el ViewModelCompose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     implementation(libs.androidx.activity.compose)

@@ -75,38 +75,60 @@ fun NavPrincipal(
             )
         }
 
-        // Esta es la vista para el CLIENTE
+        // --- RUTA COMPARTIDA: Productos (Cliente) y Tienda (Admin) ---
         composable("productos") {
             PantallaProductos(
                 vm = vmProductos,
                 esAdmin = usuarioActual?.rol == "admin",
                 onAgregarProducto = { navController.navigate("nuevo_producto") },
                 onVerDetalle = { producto ->
-                    // Aquí asumimos que tienes una ruta para el detalle
-                    // navController.navigate("producto_detalle/${producto.id}")
+                    navController.navigate("producto_detalle/${producto.id}")
                 },
                 onVolver = { navController.popBackStack() },
-                onIrACarrito = { navController.navigate("carrito") }
-            ) // <-- ¡¡CORREGIDO!! La 'V' ha sido eliminada.
-        }
-
-        // Esta es la vista para el ADMIN (cuando presiona "Gestión")
-        composable("gestion") {
-            PantallaProductos( // <-- Llamamos a la pantalla BUENA
-                vm = vmProductos,
-                esAdmin = true, // <-- Forzamos la vista de admin
-                onAgregarProducto = { navController.navigate("nuevo_producto") },
-                onVerDetalle = { producto ->
-                    // navController.navigate("producto_detalle/${producto.id}")
-                },
-                onVolver = { navController.popBackStack() }, // Vuelve a "inicio"
-                onIrACarrito = { /* No hay carrito en gestión */ }
+                onIrACarrito = { navController.navigate("carrito") },
+                // --- CONEXIÓN LÁPIZ ---
+                onEditarProducto = { producto ->
+                    navController.navigate("editar_producto/${producto.id}")
+                }
             )
         }
 
+        // --- RUTA GESTIÓN (Solo Admin) ---
+        composable("gestion") {
+            PantallaProductos(
+                vm = vmProductos,
+                esAdmin = true, // Forzamos la vista de admin
+                onAgregarProducto = { navController.navigate("nuevo_producto") },
+                onVerDetalle = { producto ->
+                    navController.navigate("producto_detalle/${producto.id}")
+                },
+                onVolver = { navController.popBackStack() },
+                onIrACarrito = { /* No hay carrito en gestión */ },
+                // --- CONEXIÓN LÁPIZ ---
+                onEditarProducto = { producto ->
+                    navController.navigate("editar_producto/${producto.id}")
+                }
+            )
+        }
+
+        // --- RUTA NUEVA PARA EDICIÓN (Carga de datos) ---
+        composable("editar_producto/{productoId}") { backStackEntry ->
+            // Captura el ID del producto de la ruta
+            val productoId = backStackEntry.arguments?.getString("productoId")?.toLongOrNull()
+
+            PantallaFormProducto( // Reutilizamos el formulario
+                vm = vmProductos,
+                productoId = productoId, // <-- LE PASAMOS EL ID DEL PRODUCTO
+                onVolver = { navController.popBackStack() },
+                onGuardar = { navController.popBackStack() }
+            )
+        }
+
+        // --- RUTA CREAR (Sin ID de producto) ---
         composable("nuevo_producto") {
             PantallaFormProducto(
                 vm = vmProductos,
+                productoId = null, // <-- Aseguramos que el ID sea nulo para CREAR
                 onVolver = { navController.popBackStack() },
                 onGuardar = { navController.popBackStack() }
             )
