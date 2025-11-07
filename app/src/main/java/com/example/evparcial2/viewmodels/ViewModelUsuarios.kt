@@ -12,11 +12,11 @@ class ViewModelUsuarios : ViewModel() {
     val usuarioActual: StateFlow<Usuario?> = _usuarioActual.asStateFlow()
 
     init {
-        // Usuario demo por defecto (para testing)
         _usuarioActual.value = Usuario(
+            id = 0,
             nombre = "Cliente Demo",
             email = "cliente@demo.com",
-            rol = "cliente"
+            rol = "cliente",
         )
     }
 

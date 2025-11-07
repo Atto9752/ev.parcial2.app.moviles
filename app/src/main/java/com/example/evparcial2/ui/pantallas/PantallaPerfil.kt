@@ -4,13 +4,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.evparcial2.data.model.Usuario
+import com.example.evparcial2.ui.components.images.ImagenInteligente
+import com.example.evparcial2.viewmodels.ViewModelPerfil
+import androidx.compose.material.icons.filled.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,7 +25,9 @@ fun PantallaPerfil(
     onVolver: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
-    var mostrarDialogoCamara by remember { mutableStateOf(false) }
+
+    val viewModelPerfil: ViewModelPerfil = viewModel()
+    val imagenUri by viewModelPerfil.imagenUri.collectAsState()
 
     Scaffold(
         topBar = {
@@ -50,15 +58,10 @@ fun PantallaPerfil(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                        .clickable { mostrarDialogoCamara = true },
+                        .clickable { onEditarFoto() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "PERFIL",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    ImagenInteligente(imagenUri = imagenUri)
                 }
 
                 // editar foto
@@ -67,13 +70,14 @@ fun PantallaPerfil(
                         .size(32.dp)
                         .background(MaterialTheme.colorScheme.primary, CircleShape)
                         .align(Alignment.BottomEnd)
-                        .clickable { mostrarDialogoCamara = true },
+                        .clickable { onEditarFoto() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "Editar",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimary
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar foto",
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -131,24 +135,6 @@ fun PantallaPerfil(
         }
     }
 
-    // dialogo elegir foto
-    if (mostrarDialogoCamara) {
-        AlertDialog(
-            onDismissRequest = { mostrarDialogoCamara = false },
-            title = { Text("Seleccionar Foto") },
-            text = { Text("¿Cómo quieres agregar tu foto de perfil?") },
-            confirmButton = {
-                Button(onClick = { mostrarDialogoCamara = false }) {
-                    Text("Usar Cámara")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { mostrarDialogoCamara = false }) {
-                    Text("Elegir de Galería")
-                }
-            }
-        )
-    }
 }
 
 @Composable
