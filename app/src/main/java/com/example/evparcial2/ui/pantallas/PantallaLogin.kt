@@ -54,6 +54,7 @@ fun PantallaLogin(alLogin: (Usuario) -> Unit) {
             Button(
                 onClick = {
                     alLogin(Usuario(
+                        id = 0,
                         nombre = "Cliente Demo",
                         email = "cliente@demo.com",
                         rol = "cliente"
@@ -67,6 +68,7 @@ fun PantallaLogin(alLogin: (Usuario) -> Unit) {
             Button(
                 onClick = {
                     alLogin(Usuario(
+                        id = 1,
                         nombre = "Admin Demo",
                         email = "admin@demo.com",
                         rol = "admin"
