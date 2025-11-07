@@ -1,33 +1,35 @@
-package com.example.evparcial2.data.local.dao
+// --- ¡¡ARREGLO #1: El paquete AHORA SÍ coincide con la carpeta!! ---
+package com.example.evparcial2.data.local.database.dao
 
-import com.example.evparcial2.data.local.entities.EntidadPedido
+// --- ¡¡ARREGLO #2: Importamos las "etiquetas" de Room!! ---
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.example.evparcial2.data.local.database.entities.EntidadPedido
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
-class DaoPedido {
-    private val pedidos = mutableListOf<EntidadPedido>()
+// --- ¡¡ARREGLO #3: Lo convertimos de 'class' a 'interface'!! ---
+@Dao // <-- Le decimos a Room que esto es un DAO
+interface DaoPedido {
 
-    suspend fun insertar(pedido: EntidadPedido): Long {
-        val nuevoId = (pedidos.maxByOrNull { it.id }?.id ?: 0) + 1
-        pedidos.add(pedido.copy(id = nuevoId))
-        return nuevoId
-    }
+    // (Toda tu lista "falsa" de pedidos se borra)
 
-    fun obtenerTodos(): Flow<List<EntidadPedido>> = flowOf(pedidos)
+    // --- ¡¡ARREGLO #4: Añadimos etiquetas a cada función!! ---
 
-    suspend fun obtenerPorId(id: Long): EntidadPedido? {
-        return pedidos.find { it.id == id }
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertar(pedido: EntidadPedido) // (Room no necesita devolver Long aquí)
 
-    fun obtenerPorUsuario(usuarioId: Long): Flow<List<EntidadPedido>> {
-        val resultados = pedidos.filter { it.usuarioId == usuarioId }
-        return flowOf(resultados)
-    }
+    @Query("SELECT * FROM tabla_pedido") // Le decimos qué comando SQL ejecutar
+    fun obtenerTodos(): Flow<List<EntidadPedido>>
 
-    suspend fun actualizar(pedido: EntidadPedido) {
-        val index = pedidos.indexOfFirst { it.id == pedido.id }
-        if (index != -1) {
-            pedidos[index] = pedido
-        }
-    }
+    @Query("SELECT * FROM tabla_pedido WHERE id = :id")
+    suspend fun obtenerPorId(id: Long): EntidadPedido?
+
+    @Query("SELECT * FROM tabla_pedido WHERE usuarioId = :usuarioId")
+    fun obtenerPorUsuario(usuarioId: Long): Flow<List<EntidadPedido>>
+
+    @Update
+    suspend fun actualizar(pedido: EntidadPedido)
 }

@@ -2,8 +2,12 @@ package com.example.evparcial2.ui.components.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -15,9 +19,12 @@ fun PlantillaProducto(
     esAdmin: Boolean,
     onVerDetalle: () -> Unit,
     onAgregarCarrito: () -> Unit,
+    onEditarProducto: () -> Unit,
+    onEliminarProducto: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    // --- ¡¡AQUÍ ESTÁ LA CORRECCIÓN!! ---
+    var expanded by remember { mutableStateOf(false) } // Antes decía mutableStateof
 
     Card(
         modifier = modifier
@@ -28,7 +35,8 @@ fun PlantillaProducto(
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -52,6 +60,8 @@ fun PlantillaProducto(
                 }
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 producto.descripcion,
                 maxLines = if (expanded) 10 else 2,
@@ -64,12 +74,33 @@ fun PlantillaProducto(
                 }
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
             if (esAdmin) {
-                Text(
-                    "Stock: ${producto.stock}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (producto.stock == 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Stock: ${producto.stock}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (producto.stock == 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Row {
+                        IconButton(onClick = onEditarProducto) {
+                            Icon(Icons.Default.Edit, contentDescription = "Editar")
+                        }
+                        IconButton(onClick = onEliminarProducto) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Eliminar",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
             }
         }
     }

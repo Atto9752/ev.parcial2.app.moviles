@@ -1,8 +1,13 @@
+// Archivo: app/build.gradle.kts (El que está DENTRO de la carpeta 'app')
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
+    // --- ¡¡LÍNEA CLAVE!! ---
+    // APLICAMOS el plugin KSP que definimos en el otro archivo
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -38,24 +43,40 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // --- ¡¡ESTO AHORA FUNCIONARÁ!! ---
+    // (Porque el plugin KSP ya está aplicado)
+    ksp {
+        arg("room.schemaDirectory", "$projectDir/schemas")
+    }
 }
 
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0") // Arreglo de ViewModel
+
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
+    // Librería de los ÍCONOS
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+
+    // --- ¡¡LIBRERÍAS DE ROOM (Base de Datos)!! ---
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+
+    // --- ¡¡ESTO AHORA FUNCIONARÁ!! ---
+    ksp("androidx.room:room-compiler:$room_version")
+
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.protolite.well.known.types)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

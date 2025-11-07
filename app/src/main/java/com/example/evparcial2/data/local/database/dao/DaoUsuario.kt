@@ -1,36 +1,39 @@
-package com.example.evparcial2.data.local.dao
+// --- ¡¡ARREGLO #1: El paquete AHORA SÍ coincide con la carpeta!! ---
+package com.example.evparcial2.data.local.database.dao
 
-import com.example.evparcial2.data.local.entities.EntidadUsuario
+// --- ¡¡ARREGLO #2: Importamos las "etiquetas" de Room!! ---
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.example.evparcial2.data.local.database.entities.EntidadUsuario
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
-class DaoUsuario {
-    private val usuarios = mutableListOf<EntidadUsuario>()
+// --- ¡¡ARREGLO #3: Lo convertimos de 'class' a 'interface'!! ---
+@Dao // <-- Le decimos a Room que esto es un DAO
+interface DaoUsuario {
 
-    suspend fun insertar(usuario: EntidadUsuario): Long {
-        val nuevoId = (usuarios.maxByOrNull { it.id }?.id ?: 0) + 1
-        usuarios.add(usuario.copy(id = nuevoId))
-        return nuevoId
-    }
+    // (Toda tu lista "falsa" de usuarios se borra,
+    // porque ahora la base de datos real se encargará de guardar)
 
-    fun obtenerTodos(): Flow<List<EntidadUsuario>> = flowOf(usuarios)
+    // --- ¡¡ARREGLO #4: Añadimos etiquetas a cada función!! ---
 
-    suspend fun obtenerPorId(id: Long): EntidadUsuario? {
-        return usuarios.find { it.id == id }
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertar(usuario: EntidadUsuario) // (La 'class' se borra, las funciones se quedan)
 
-    suspend fun login(email: String, contrasena: String): EntidadUsuario? {
-        return usuarios.find { it.email == email && it.contrasena == contrasena }
-    }
+    @Query("SELECT * FROM tabla_usuario") // Le decimos qué comando SQL ejecutar
+    fun obtenerTodos(): Flow<List<EntidadUsuario>>
 
-    suspend fun obtenerPorEmail(email: String): EntidadUsuario? {
-        return usuarios.find { it.email == email }
-    }
+    @Query("SELECT * FROM tabla_usuario WHERE id = :id")
+    suspend fun obtenerPorId(id: Long): EntidadUsuario?
 
-    suspend fun actualizar(usuario: EntidadUsuario) {
-        val index = usuarios.indexOfFirst { it.id == usuario.id }
-        if (index != -1) {
-            usuarios[index] = usuario
-        }
-    }
+    @Query("SELECT * FROM tabla_usuario WHERE email = :email AND contrasena = :contrasena")
+    suspend fun login(email: String, contrasena: String): EntidadUsuario?
+
+    @Query("SELECT * FROM tabla_usuario WHERE email = :email")
+    suspend fun obtenerPorEmail(email: String): EntidadUsuario?
+
+    @Update
+    suspend fun actualizar(usuario: EntidadUsuario)
 }

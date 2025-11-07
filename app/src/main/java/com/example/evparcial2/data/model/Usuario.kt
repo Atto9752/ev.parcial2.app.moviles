@@ -1,10 +1,8 @@
 package com.example.evparcial2.data.model
 
-import android.net.Uri
-
 data class Usuario(
-    val id: Int,
     val nombre: String,
     val email: String,
     val rol: String,
+    val pass: String
 )

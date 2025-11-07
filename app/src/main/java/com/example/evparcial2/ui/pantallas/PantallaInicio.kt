@@ -1,10 +1,17 @@
 package com.example.evparcial2.ui.pantallas
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Store
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.evparcial2.data.model.Usuario
 
@@ -26,52 +33,70 @@ fun PantallaInicio(
                 title = { Text("Bienvenido, ${usuario.nombre}") },
                 actions = {
                     IconButton(onClick = irPerfil) {
-                        Text("P", style = MaterialTheme.typography.bodyLarge)
+                        Icon(
+                            Icons.Filled.AccountCircle,
+                            contentDescription = "Perfil"
+                        )
                     }
                 }
             )
         },
+        // --- ¡¡BARRA INFERIOR SIMPLIFICADA!! ---
         bottomBar = {
             BottomAppBar {
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    // 'SpaceAround' para Cliente, 'Center' para Admin
+                    horizontalArrangement = if (esAdmin) Arrangement.Center else Arrangement.SpaceAround
+                ) {
                     if (esAdmin) {
+                        // --- AHORA SOLO HAY UN BOTÓN PARA EL ADMIN ---
                         Button(onClick = irGestion) {
-                            Text("Gestionar")
+                            Text("Gestionar Tienda")
+                            Spacer(modifier = Modifier.width(8.dp)) // Más espacio
+                            Icon(Icons.Filled.Build, contentDescription = null)
                         }
                     } else {
+                        // --- LOS 3 BOTONES DEL CLIENTE SE QUEDAN IGUAL ---
+                        Button(onClick = irProductos) {
+                            Text("Tienda")
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(Icons.Filled.Store, contentDescription = null)
+                        }
+                        Button(onClick = irPedidos) {
+                            Text("Pedidos")
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(Icons.Filled.List, contentDescription = null)
+                        }
                         Button(onClick = irCarrito) {
                             Text("Carrito")
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(Icons.Filled.ShoppingCart, contentDescription = null)
                         }
-                    }
-                    Spacer(Modifier.weight(1f))
-                    Button(onClick = irProductos) {
-                        Text("Productos")
                     }
                 }
             }
         }
     ) { padding ->
+        // --- Contenido de bienvenida (sin botones confusos) ---
         Column(
-            modifier = Modifier.padding(padding).fillMaxSize().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(if (esAdmin) "Panel Admin" else "Tienda", style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // SIMPLE - sin clickable problemático
-            if (esAdmin) {
-                Button(onClick = irGestion, modifier = Modifier.fillMaxWidth()) {
-                    Text("Gestionar Productos")
-                }
-            } else {
-                Button(onClick = irProductos, modifier = Modifier.fillMaxWidth()) {
-                    Text("Ver Catálogo")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = irPedidos, modifier = Modifier.fillMaxWidth()) {
-                    Text("Mis Pedidos")
-                }
-            }
+            Text(
+                if (esAdmin) "Panel de Administrador" else "¡Bienvenido a la Tienda!",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "Usa la barra de navegación inferior para moverte por la app.",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
